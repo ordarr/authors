@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 (2025-02-02)
+
+
+### Features
+
+* initial build of the core Authors service ([0cbf2c5](https://github.com/ordarr/authors/commit/0cbf2c5b085c01f000bff8915b6b26ccfed22c5b))
+
 ## [1.1.0](https://github.com/ordarr/authors/compare/v1.0.0...v1.1.0) (2025-02-02)
 
 
