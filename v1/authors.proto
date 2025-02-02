@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package authors.v1;
+
+option go_package = "github.com/ordarr/authors/v1";
+
+import "google/protobuf/empty.proto";
+
+message ValueRequest {
+  string value = 1;
+}
+
+message Author {
+  string id = 1;
+  uint32 calibre = 2;
+  uint32 koreader = 3;
+  string name = 4;
+}
+
+message AuthorResponse {
+  Author content = 1;
+}
+
+message AuthorsResponse {
+	repeated Author content = 1;
+}
+
+service Authors {
+  rpc GetAuthors(google.protobuf.Empty) returns (AuthorsResponse) {}
+  rpc GetAuthorById(ValueRequest) returns (AuthorResponse) {}
+  rpc GetAuthorByName(ValueRequest) returns (AuthorResponse) {}
+}
