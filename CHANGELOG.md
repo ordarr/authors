@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/ordarr/authors/compare/v1.1.0...v1.1.1) (2025-02-08)
+
+
+### Bug Fixes
+
+* adding registration build ([430377b](https://github.com/ordarr/authors/commit/430377b16b89009d391017413137bcc85c9112f9))
+
 ## [1.1.0](https://github.com/ordarr/authors/compare/v1.0.0...v1.1.0) (2025-02-08)
 
 
