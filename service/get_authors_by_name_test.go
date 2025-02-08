@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/google/uuid"
 	pb "github.com/ordarr/authors/v1"
+	"github.com/ordarr/data/core"
 	"github.com/stretchr/testify/assert"
 	_ "github.com/stretchr/testify/suite"
 	"google.golang.org/grpc/codes"
@@ -13,16 +13,22 @@ func (suite *AuthorTestSuite) TestGetAuthorByName() {
 	t := suite.T()
 
 	suite.Run("ReturnsPopulatedAuthor", func() {
-		suite.populate()
+		suite.mockRepo.(*MockRepo).On("GetByName", []string{"Name One"}).Return([]*core.Author{
+			{
+				BaseTable: core.BaseTable{ID: "12345"},
+				Name:      "Name One",
+			},
+		}, nil)
 
-		out, _ := suite.client.GetAuthorByName(suite.ctx, &pb.ValueRequest{Value: "Name One"})
+		out, _ := suite.client.GetAuthors(suite.ctx, &pb.GetAuthorsRequest{Names: []string{"Name One"}})
 
 		assert.NotNil(t, out)
-		assert.NoError(t, uuid.Validate(out.Content.Id))
+		assert.Equal(t, "12345", out.Content[0].Id)
 	})
 
 	suite.Run("ErrorWhenAuthorDoesntExist", func() {
-		_, err := suite.client.GetAuthorByName(suite.ctx, &pb.ValueRequest{Value: "some-random-id"})
+		suite.mockRepo.(*MockRepo).On("GetByName", []string{"Name One"}).Return(nil, status.Error(codes.NotFound, "author not found"))
+		_, err := suite.client.GetAuthors(suite.ctx, &pb.GetAuthorsRequest{Names: []string{"Name One"}})
 
 		assert.NotNil(t, err)
 		assert.ErrorIs(t, err, status.Error(codes.NotFound, "author not found"))

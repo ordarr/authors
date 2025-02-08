@@ -4,9 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ordarr/authors/service"
-	pb "github.com/ordarr/authors/v1"
 	"github.com/ordarr/data/core"
-	"google.golang.org/grpc"
 	"log"
 	"net"
 )
@@ -21,13 +19,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := grpc.NewServer()
-	config, err := core.BuildConfig()
+	config, _ := core.BuildConfig()
+	s, err := service.Server(&core.AuthorRepository{DB: core.Connect(config)})
 	if err != nil {
 		log.Fatalf("failed to build config: %v", err)
 	}
-	connect := core.Connect(config)
-	pb.RegisterAuthorsServer(s, service.NewServer(core.AuthorRepository{DB: connect}))
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

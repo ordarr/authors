@@ -1,27 +1,25 @@
 package service
 
 import (
+	pb "github.com/ordarr/authors/v1"
+	"github.com/ordarr/data/core"
 	"github.com/stretchr/testify/assert"
 	_ "github.com/stretchr/testify/suite"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 func (suite *AuthorTestSuite) TestGetAllAuthors() {
 	t := suite.T()
 
 	suite.Run("ReturnsPopulatedList", func() {
-		suite.populate()
-
-		out, _ := suite.client.GetAuthors(suite.ctx, &emptypb.Empty{})
-
-		assert.NotNil(t, out)
-		assert.Len(t, out.Content, 2)
-	})
-
-	suite.Run("ReturnsEmptyList", func() {
-		out, _ := suite.client.GetAuthors(suite.ctx, &emptypb.Empty{})
+		suite.mockRepo.(*MockRepo).On("GetAll").Return([]*core.Author{
+			{
+				BaseTable: core.BaseTable{ID: "12345"},
+				Name:      "Author 1",
+			},
+		}, nil)
+		out, _ := suite.client.GetAuthors(suite.ctx, &pb.GetAuthorsRequest{})
 
 		assert.NotNil(t, out)
-		assert.Len(t, out.Content, 0)
+		assert.Len(t, out.Content, 1)
 	})
 }

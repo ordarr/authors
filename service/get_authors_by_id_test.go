@@ -2,6 +2,7 @@ package service
 
 import (
 	pb "github.com/ordarr/authors/v1"
+	"github.com/ordarr/data/core"
 	"github.com/stretchr/testify/assert"
 	_ "github.com/stretchr/testify/suite"
 	"google.golang.org/grpc/codes"
@@ -12,18 +13,22 @@ func (suite *AuthorTestSuite) TestGetAuthorById() {
 	t := suite.T()
 
 	suite.Run("ReturnsPopulatedAuthor", func() {
-		inserted := suite.populate()
+		suite.mockRepo.(*MockRepo).On("GetByID", []string{"12345"}).Return([]*core.Author{
+			{
+				BaseTable: core.BaseTable{ID: "12345"},
+				Name:      "Name One",
+			},
+		}, nil)
 
-		out, _ := suite.client.GetAuthorById(suite.ctx, &pb.ValueRequest{Value: inserted[0].ID})
+		out, _ := suite.client.GetAuthors(suite.ctx, &pb.GetAuthorsRequest{Ids: []string{"12345"}})
 
 		assert.NotNil(t, out)
-		assert.Equal(t, inserted[0].Name, out.Content.Name)
+		assert.Equal(t, "Name One", out.Content[0].Name)
 	})
 
 	suite.Run("ErrorWhenAuthorDoesntExist", func() {
-		t := suite.T()
-
-		_, err := suite.client.GetAuthorById(suite.ctx, &pb.ValueRequest{Value: "4783e133-d856-43f4-8d38-9e50c5996cad"})
+		suite.mockRepo.(*MockRepo).On("GetByID", []string{"12345"}).Return(nil, status.Error(codes.NotFound, "author not found"))
+		_, err := suite.client.GetAuthors(suite.ctx, &pb.GetAuthorsRequest{Ids: []string{"12345"}})
 
 		assert.NotNil(t, err)
 		assert.ErrorIs(t, err, status.Error(codes.NotFound, "author not found"))

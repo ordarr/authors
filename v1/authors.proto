@@ -4,17 +4,18 @@ package authors.v1;
 
 option go_package = "github.com/ordarr/authors/v1";
 
-import "google/protobuf/empty.proto";
+message CreateAuthorRequest {
+  string name = 1;
+}
 
-message ValueRequest {
-  string value = 1;
+message GetAuthorsRequest {
+  repeated string names = 1;
+  repeated string ids = 2;
 }
 
 message Author {
   string id = 1;
-  uint32 calibre = 2;
-  uint32 koreader = 3;
-  string name = 4;
+  string name = 2;
 }
 
 message AuthorResponse {
@@ -22,11 +23,10 @@ message AuthorResponse {
 }
 
 message AuthorsResponse {
-	repeated Author content = 1;
+  repeated Author content = 1;
 }
 
 service Authors {
-  rpc GetAuthors(google.protobuf.Empty) returns (AuthorsResponse) {}
-  rpc GetAuthorById(ValueRequest) returns (AuthorResponse) {}
-  rpc GetAuthorByName(ValueRequest) returns (AuthorResponse) {}
+  rpc CreateAuthor(CreateAuthorRequest) returns (AuthorResponse) {}
+  rpc GetAuthors(GetAuthorsRequest) returns (AuthorsResponse) {}
 }

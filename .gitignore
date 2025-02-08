@@ -4,6 +4,3 @@
 build
 *.pb.go
 bin
-
-ordarr.db
-authors
