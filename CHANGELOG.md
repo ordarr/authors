@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/ordarr/authors/compare/v1.0.0...v1.1.0) (2025-02-08)
+
+
+### Features
+
+* Removing DB from tests of service layer ([4507883](https://github.com/ordarr/authors/commit/4507883e4b574eef12910ba2a8faa9fcba851521))
+
+
+### Bug Fixes
+
+* tidying go mods ([e5526f5](https://github.com/ordarr/authors/commit/e5526f53b5d66070caf6ef6f7d4293c594c6034d))
+
 ## 1.0.0 (2025-02-02)
 
 
