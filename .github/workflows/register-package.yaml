@@ -1,0 +1,24 @@
+name: Publish Package
+
+on:
+  release:
+      types: [published]
+
+env:
+  PACKAGE: github.com/ordarr/authors@${{ github.event.release.tag_name }}
+
+jobs:
+  publish-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+      - run: GOPROXY=proxy.golang.org go list -m ${{ env.PACKAGE }}
+      - name: Create Summary
+        run: |
+          echo "## :zap: Published Package :zap:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ${{ env.PACKAGE }}" >> $GITHUB_STEP_SUMMARY
